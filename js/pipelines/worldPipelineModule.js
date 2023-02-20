@@ -6,6 +6,7 @@ import Lights from '../classes/Lights'
 import Box from '../classes/Box'
 import TextureProjection from '../classes/TextureProjection'
 import LiveFeed from '../classes/LiveFeed'
+import Depth from '../classes/Depth'
 
 export const initWorldPipelineModule = () => {
   const cameraTexture = new THREE.Texture()
@@ -23,6 +24,7 @@ export const initWorldPipelineModule = () => {
     // Box.init()
     // TextureProjection.init()
     // LiveFeed.init()
+    Depth.init()
 
     console.log('✨', 'World ready')
   }
@@ -45,6 +47,7 @@ export const initWorldPipelineModule = () => {
     Box?.update()
     TextureProjection?.update()
     LiveFeed?.update()
+    Depth?.update()
   }
 
   return {
