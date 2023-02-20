@@ -39,7 +39,7 @@ class _Depth {
 
     this.instance = glb.scene.children[0]
 
-    this.instance.position.set(0, -1, -1.5)
+    this.instance.position.set(0, -0.8, 0)
     this.instance.rotation.set(0, 0, 0)
     this.instance.scale.set(2000, 2000, 2000)
 
@@ -93,7 +93,7 @@ class _Depth {
 
     if (this.instance) {
       this.instance.position.z = -1.4 + 0.15 * Math.sin(this.time / 50)
-      this.instance.rotation.y = 0.3 * Math.sin(this.time / 100)
+      this.instance.rotation.y = 0.3 * Math.sin(this.time * 0.05)
     }
   }
 

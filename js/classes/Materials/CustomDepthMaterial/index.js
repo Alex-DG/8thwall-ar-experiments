@@ -6,7 +6,7 @@ import fragmentShader from './fragment.glsl'
 class CustomDepthMaterial extends ShaderMaterial {
   constructor(camera) {
     super({
-      side: DoubleSide,
+      // side: DoubleSide,
       uniforms: {
         time: { value: 0 },
         cameraNear: { value: camera.near },

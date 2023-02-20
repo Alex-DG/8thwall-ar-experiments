@@ -17,9 +17,9 @@ void main() {
 	float depth = readDepth( depthInfo, vUv );
 
 	// gl_FragColor.rgb = 1.0 - vec3( depth );
-	// gl_FragColor.a = 1.0;
+	// gl_FragColor.a = 0.5;
 
 	vec3 depthTexture = 1.0 - vec3( depth );
-	float alpha = smoothstep(0.2, 0.25, vPosZ);
+	float alpha = smoothstep(0.2, 0.25, vPosZ) * 0.8;
 	gl_FragColor = vec4(depthTexture, alpha);
 }
