@@ -26,11 +26,11 @@ void main() {
   vec3 pos = position;
   pos.z += (1.0 - depth) * 2.; 
 
-  float scale = 1.0;
-  float sX = 1.5;
-  mat4 sPos = mat4(vec4(scale * sX, 0.0, 0.0 ,0.0),                      
-                    vec4(0.0, scale, 0.0, 0.0),                     
-                      vec4(0.0, 0.0, scale, 0.0),                       
+  float baseScale = 1.0;
+  float scaleX = 1.5;
+  mat4 sPos = mat4(vec4(baseScale * scaleX, 0.0, 0.0 ,0.0),                      
+                    vec4(0.0, baseScale, 0.0, 0.0),                     
+                      vec4(0.0, 0.0, baseScale, 0.0),                       
                         vec4(0.0, 0.0, 0.0, 1.0));
 
   gl_Position = projectionMatrix * modelViewMatrix * sPos * vec4(pos, 1.0);

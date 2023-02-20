@@ -93,7 +93,7 @@ class _Depth {
 
     if (this.instance) {
       this.instance.position.z = -1.4 + 0.15 * Math.sin(this.time / 50)
-      this.instance.rotation.y = +0.25 * Math.sin(this.time / 100)
+      this.instance.rotation.y = 0.3 * Math.sin(this.time / 100)
     }
   }
 
