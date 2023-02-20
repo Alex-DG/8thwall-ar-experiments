@@ -10,6 +10,7 @@ uniform float cameraFar;
 varying vec2 vUv;
 varying vec3 vPosition;
 varying float vDepth;
+varying float vPosZ;
 
 
 float readDepth( sampler2D depthSampler, vec2 coord ) {
@@ -24,16 +25,18 @@ void main() {
   float depth = readDepth( depthInfo, vUv );
 
   vec3 pos = position;
-  pos.z += (1.0 - depth) * 2.; 
-
+  pos.z += (1.0 - depth) * 1.2; 
+  
   float baseScale = 1.0;
-  float scaleX = 1.5;
-  mat4 sPos = mat4(vec4(baseScale * scaleX, 0.0, 0.0 ,0.0),                      
-                    vec4(0.0, baseScale, 0.0, 0.0),                     
-                      vec4(0.0, 0.0, baseScale, 0.0),                       
+  float powerScale = 1.25;
+  mat4 sPos = mat4(vec4(baseScale * powerScale * 2., 0.0, 0.0 ,0.0),                      
+                    vec4(0.0, baseScale * powerScale, 0.0, 0.0),                     
+                      vec4(0.0, 0.0, baseScale  * powerScale, 0.0),                       
                         vec4(0.0, 0.0, 0.0, 1.0));
 
   gl_Position = projectionMatrix * modelViewMatrix * sPos * vec4(pos, 1.0);
+
+  vPosZ = pos.z;
 
   // vUv = uv;
   // vec2 vUv1 = (vec2(vUv.x,y) - 0.5)/resolution.zw + vec2(0.5);

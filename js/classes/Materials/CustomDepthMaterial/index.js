@@ -14,7 +14,7 @@ class CustomDepthMaterial extends ShaderMaterial {
         resolution: { value: new Vector4() },
       },
       // wireframe: true,
-      // transparent: true,
+      transparent: true,
       vertexShader,
       fragmentShader,
     })

@@ -22,7 +22,7 @@ export const initThreeScenePipelineModule = () => {
     // height greater than y=0.
     camera.position.set(0, 3, 5)
     camera1.position.set(0, 0, 4)
-    camera2.position.set(0, 0, 2)
+    camera2.position.set(0, 0, 2) // depth
 
     // Sync the xr controller's 6DoF position and camera paremeters with our scene.
     XR8.XrController.updateCameraProjectionMatrix({
