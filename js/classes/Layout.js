@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import ProjectedMaterial from 'three-projected-material'
 import Model from './Model'
 import Depth from './Depth'
+import Exemple from './Exemple'
 
 // import '@tensorflow/tfjs-backend-core'
 // import '@tensorflow/tfjs-backend-webgl'
@@ -29,7 +30,7 @@ class _Layout {
 
     const depths = new Float32Array(canvas.width * canvas.height * 4)
     renderer.readRenderTargetPixels(
-      Depth.target,
+      Exemple.target,
       0,
       0,
       canvas.width,
@@ -39,7 +40,7 @@ class _Layout {
 
     console.log({
       depths,
-      target: Depth.target,
+      target: Exemple.target,
     })
   }
 

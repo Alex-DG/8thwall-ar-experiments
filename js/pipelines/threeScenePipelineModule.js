@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import Depth from '../classes/Depth'
+import Exemple from '../classes/Exemple'
 
 let count = 0
 
@@ -123,6 +124,7 @@ export const initThreeScenePipelineModule = () => {
       // renderer.render(scene, camera)
 
       Depth.render()
+      Exemple.render()
 
       renderer.autoClear = false
 
