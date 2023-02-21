@@ -2,37 +2,45 @@ import * as THREE from 'three'
 
 import ProjectedMaterial from 'three-projected-material'
 import Model from './Model'
+import Depth from './Depth'
+
+// import '@tensorflow/tfjs-backend-core'
+// import '@tensorflow/tfjs-backend-webgl'
+// import '@tensorflow/tfjs-converter'
+// import '@tensorflow-models/body-segmentation'
+// import * as depthEstimation from '@tensorflow-models/depth-estimation'
 
 class _Layout {
   async saveMap() {
-    const { camera } = XR8.Threejs.xrScene()
+    const { camera, scene, camera2, renderer } = XR8.Threejs.xrScene()
+    const canvas = renderer.domElement
 
-    // const loader = new THREE.TextureLoader()
-    // const texture = await loader.loadAsync('textures/Fox/Fox_face.png')
-    const texture = Model.instance.children[0].material.map.clone()
+    // const depths = new Float32Array(
+    //   Depth.target.width * Depth.target.height * 4
+    // )
+    // renderer.readRenderTargetPixels(
+    //   Depth.target,
+    //   0,
+    //   0,
+    //   Depth.target.width,
+    //   Depth.target.height,
+    //   depths
+    // )
 
-    const renderer = new THREE.WebGLRenderer()
-    renderer.setSize(1024, 1024)
-    document.body.appendChild(renderer.domElement)
+    const depths = new Float32Array(canvas.width * canvas.height * 4)
+    renderer.readRenderTargetPixels(
+      Depth.target,
+      0,
+      0,
+      canvas.width,
+      canvas.height,
+      depths
+    )
 
-    const scene = new THREE.Scene()
-    scene.add(new THREE.AmbientLight('rgb(255,255,255)', 1))
-
-    // Here
-    scene.background = texture
-
-    renderer.render(scene, camera)
-
-    const imageURL = renderer.domElement.toDataURL('image/png')
-    const anchor = document.createElement('a')
-    anchor.href = imageURL
-    anchor.download = 'preview.png'
-    anchor.click()
-
-    // anchor.remove()
-    // texture.dispose()
-    // renderer.domElement.parentElement?.removeChild(renderer.domElement)
-    // renderer.dispose()
+    console.log({
+      depths,
+      target: Depth.target,
+    })
   }
 
   async projection() {

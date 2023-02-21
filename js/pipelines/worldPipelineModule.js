@@ -23,12 +23,13 @@ export const initWorldPipelineModule = () => {
 
     // Box.init()
     // TextureProjection.init()
-    // LiveFeed.init()
-    Depth.init()
+    LiveFeed.init()
+    // Depth.init()
 
     console.log('✨', 'World ready')
   }
 
+  // Old approach to render the camera video now I just use the video dom element as a texture
   const camTextureUpdate = (data) => {
     // const _viewport = data.processGpuResult?.gltexturerenderer?.viewport
     const realityTexture = data.processCpuResult?.reality?.realityTexture
@@ -55,7 +56,7 @@ export const initWorldPipelineModule = () => {
 
     onStart: () => init(),
 
-    onUpdate: (data) => camTextureUpdate(data),
+    // onUpdate: (data) => camTextureUpdate(data),
 
     onRender: () => render(),
   }

@@ -29,7 +29,10 @@ class _Depth {
     this.target.stencilBuffer =
       format === THREE.DepthStencilFormat ? true : false
     this.target.depthBuffer = true
-    this.target.depthTexture = new THREE.DepthTexture()
+    this.target.depthTexture = new THREE.DepthTexture(
+      window.innerWidth,
+      window.innerHeight
+    )
     this.target.depthTexture.format = format
     this.target.depthTexture.type = type
   }

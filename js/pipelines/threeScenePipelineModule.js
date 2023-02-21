@@ -10,19 +10,18 @@ export const initThreeScenePipelineModule = () => {
 
     // Camera
     const aspect = canvasWidth / canvasHeight
-    const camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000)
-    const camera1 = new THREE.PerspectiveCamera(75, aspect, 2, 3)
-
-    const camera2 = new THREE.PerspectiveCamera(50, aspect, 2, 3)
+    const camera = new THREE.PerspectiveCamera(70, aspect, 0.01, 50) // Main Scene
+    // const camera1 = new THREE.PerspectiveCamera(75, aspect, 2, 3) // TextureProjection.js
+    const camera2 = new THREE.PerspectiveCamera(50, aspect, 2, 3) // Depth.js
 
     scene.add(camera)
-    scene.add(camera1)
+    // scene.add(camera1)
 
     // Set the initial camera position relative to the scene we just laid out. This must be at a
     // height greater than y=0.
     camera.position.set(0, 3, 5)
-    camera1.position.set(0, 0, 4)
-    camera2.position.set(0, 0, 2) // depth
+    // camera1.position.set(0, 0, 4)
+    camera2.position.set(0, 0, 2)
 
     // Sync the xr controller's 6DoF position and camera paremeters with our scene.
     XR8.XrController.updateCameraProjectionMatrix({
@@ -41,7 +40,7 @@ export const initThreeScenePipelineModule = () => {
     renderer.setSize(canvasWidth, canvasHeight)
 
     // XR Scene Data
-    const xrSceneData = { scene, camera, renderer, camera1, camera2 }
+    const xrSceneData = { scene, camera, renderer, camera2 }
     window.XR8.Threejs.xrScene = () => xrSceneData
 
     // Prevent scroll/pinch
