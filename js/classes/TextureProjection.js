@@ -62,7 +62,7 @@ class _TextureProjection {
     this.elements = elements
   }
 
-  async loadTexture() {
+  async load() {
     try {
       const loader = new THREE.TextureLoader()
       const texture = await loader.loadAsync('textures/Fox/Fox_face.png')
@@ -89,7 +89,7 @@ class _TextureProjection {
   }
 
   init() {
-    this.loadTexture()
+    this.load()
   }
 
   update() {

@@ -8,6 +8,7 @@ import TextureProjection from '../classes/TextureProjection'
 import LiveFeed from '../classes/LiveFeed'
 import Depth from '../classes/Depth'
 import Exemple from '../classes/Exemple'
+import Hachiko from '../classes/Hachiko'
 
 export const initWorldPipelineModule = () => {
   const cameraTexture = new THREE.Texture()
@@ -22,7 +23,9 @@ export const initWorldPipelineModule = () => {
 
     Lights.init()
 
-    // Box.init()
+    // Hachiko.init()
+
+    Box.init()
     // TextureProjection.init()
     // LiveFeed.init()
     // Depth.init()
@@ -47,7 +50,7 @@ export const initWorldPipelineModule = () => {
   }
 
   const render = () => {
-    Box?.update()
+    // Box?.update()
     TextureProjection?.update()
     LiveFeed?.update()
     Depth?.update()

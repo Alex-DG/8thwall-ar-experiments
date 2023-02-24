@@ -9,6 +9,9 @@ export const initThreeScenePipelineModule = () => {
     // Scene
     const scene = new THREE.Scene()
 
+    // const test = GLctx.getDrawingBufferSize()
+    // console.log({ test })
+
     // Camera
     const aspect = canvasWidth / canvasHeight
     const camera = new THREE.PerspectiveCamera(70, aspect, 0.01, 50) // Main Scene
@@ -106,12 +109,18 @@ export const initThreeScenePipelineModule = () => {
       //   count += 1
       //   console.log({ processCpuResult, ...others })
       // }
-      XR8.Threejs.xrScene().data = { processCpuResult, ...others }
+      // XR8.Threejs.xrScene().data = { processCpuResult, ...others }
     },
 
-    onProcessGpu: ({ frameStartResult }) => {
-      XR8.Threejs.xrScene().frameStartResult = frameStartResult
-    },
+    // https://www.8thwall.com/docs/web/#onprocesscpu
+    // onProcessCpu: (data) => {
+    //   // console.log({ data })
+    // },
+
+    // onProcessGpu: (data) => {
+    //   // const { frameStartResult } = data
+    //   // XR8.Threejs.xrScene().frameStartResult = frameStartResult
+    // },
     onCanvasSizeChange: ({ canvasWidth, canvasHeight }) => {
       const { renderer } = XR8.Threejs.xrScene()
       renderer?.setSize(canvasWidth, canvasHeight)

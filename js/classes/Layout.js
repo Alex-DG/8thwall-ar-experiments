@@ -1,97 +1,112 @@
 import * as THREE from 'three'
 
-import ProjectedMaterial from 'three-projected-material'
-import Model from './Model'
-import Depth from './Depth'
-import Exemple from './Exemple'
-
-// import '@tensorflow/tfjs-backend-core'
-// import '@tensorflow/tfjs-backend-webgl'
-// import '@tensorflow/tfjs-converter'
-// import '@tensorflow-models/body-segmentation'
-// import * as depthEstimation from '@tensorflow-models/depth-estimation'
+import Box from './Box'
+import ProjectedMaterial from './Materials/ProjectedMaterial'
 
 class _Layout {
-  async saveMap() {
-    const { camera, scene, camera2, renderer } = XR8.Threejs.xrScene()
-    const canvas = renderer.domElement
+  async project() {
+    try {
+      const { camera } = XR8.Threejs.xrScene()
+      const loader = new THREE.TextureLoader()
+      const texture = await loader.loadAsync(
+        'textures/Depth/generated_depth.png'
+      )
+      console.log({ texture })
+      const material = new ProjectedMaterial({
+        camera,
+        texture,
+        color: 'white',
+        textureScale: 0.7,
+        // textureOffset: new THREE.Vector2(-0.01, 0),
+      })
 
-    // const depths = new Float32Array(
-    //   Depth.target.width * Depth.target.height * 4
-    // )
-    // renderer.readRenderTargetPixels(
-    //   Depth.target,
-    //   0,
-    //   0,
-    //   Depth.target.width,
-    //   Depth.target.height,
-    //   depths
-    // )
+      Box.instance.material = material
+      Box.instance.material.needsUpdate = true
 
-    const depths = new Float32Array(canvas.width * canvas.height * 4)
-    renderer.readRenderTargetPixels(
-      Exemple.target,
-      0,
-      0,
-      canvas.width,
-      canvas.height,
-      depths
+      material.project(Box.instance)
+      console.log('texture projected!')
+    } catch (error) {
+      console.log({ error })
+    }
+  }
+
+  async createDepthMap() {
+    const { renderer, camera, scene } = XR8.Threejs.xrScene()
+
+    const format = THREE.DepthFormat
+    const type = THREE.UnsignedShortType
+    const target = new THREE.WebGLRenderTarget(
+      window.innerWidth,
+      window.innerHeight
     )
+    target.texture.minFilter = THREE.NearestFilter
+    target.texture.magFilter = THREE.NearestFilter
+    target.stencilBuffer = format === THREE.DepthStencilFormat ? true : false
+    target.depthTexture = new THREE.DepthTexture()
+    target.depthTexture.format = format
+    target.depthTexture.type = type
 
-    console.log({
-      depths,
-      target: Exemple.target,
+    // Setup post processing stage
+    const postCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1)
+    const postMaterial = new THREE.ShaderMaterial({
+      vertexShader: `
+            varying vec2 vUv;
+
+            void main() {
+              vUv = uv;
+              gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+          `,
+      fragmentShader: `
+            #include <packing>
+
+            varying vec2 vUv;
+            uniform sampler2D tDiffuse;
+            uniform sampler2D tDepth;
+            uniform float cameraNear;
+            uniform float cameraFar;
+
+
+            float readDepth( sampler2D depthSampler, vec2 coord ) {
+              float fragCoordZ = texture2D( depthSampler, coord ).x;
+              float viewZ = perspectiveDepthToViewZ( fragCoordZ, cameraNear, cameraFar );
+              return viewZToOrthographicDepth( viewZ, cameraNear, cameraFar );
+            }
+
+            void main() {
+              //vec3 diffuse = texture2D( tDiffuse, vUv ).rgb;
+              float depth = readDepth( tDepth, vUv );
+
+              gl_FragColor.rgb = 1.0 - vec3( depth );
+              gl_FragColor.a = 1.0;
+            }
+          `,
+      uniforms: {
+        cameraNear: { value: camera.near },
+        cameraFar: { value: camera.far },
+        tDiffuse: { value: null },
+        tDepth: { value: null },
+      },
     })
-  }
+    const postPlane = new THREE.PlaneGeometry(5, 5)
+    const postQuad = new THREE.Mesh(postPlane, postMaterial)
+    postQuad.position.z = 0
+    postQuad.rotateX(-Math.PI / 8)
+    const postScene = new THREE.Scene()
 
-  async projection() {
-    const { camera } = XR8.Threejs.xrScene()
+    // render scene into target
+    renderer.setRenderTarget(target)
+    renderer.render(scene, camera)
 
-    const loader = new THREE.TextureLoader()
-    const texture = await loader.loadAsync('textures/Desk/desk1.png')
-    // texture.mapping = THREE.UVMapping
+    // render post FX
+    postMaterial.uniforms.tDiffuse.value = target.texture
+    postMaterial.uniforms.tDepth.value = target.depthTexture
 
-    Model.instance.children[0].material.map = texture
-    Model.instance.children[0].material.map.mapping = THREE.UVMapping
-    Model.instance.children[0].material.needsUpdate = true
+    console.log({ depthTexture: target.depthTexture })
 
-    // Model.instance.traverse((child) => {
-    //   if (child.isMesh) {
-    //     const material = new ProjectedMaterial({
-    //       camera,
-    //       texture,
-    //       color: 'white',
-    //       textureScale: 0.8,
-    //       // textureOffset: new THREE.Vector2(-0.01, 0.4),
-    //     })
-
-    //     child.material = material
-    //     child.material.needsUpdate = true
-
-    //     material.project(child)
-    //   }
-    // })
-  }
-
-  async capture() {
-    console.log('Capturing...')
-
-    const { cameraTexture } = XR8.Threejs.xrScene()
-    cameraTexture.minFilter = THREE.NearestFilter
-    cameraTexture.magFilter = THREE.NearestFilter
-    cameraTexture.needsUpdate = true
-
-    const screenshotData = await XR8.CanvasScreenshot.takeScreenshot()
-    const source = 'data:image/jpeg;base64,' + screenshotData
-
-    const image = new Image()
-    image.src = source
-
-    this.canvasImage.src = source
-
-    // Create Texture
-    const texture = new THREE.Texture(image)
-    texture.needsUpdate = true
+    // Box.hide()
+    // scene.add(postQuad)
+    this.depthTexture = target.depthTexture
   }
 
   setLayout() {
@@ -99,9 +114,8 @@ class _Layout {
     const screenUI = document.querySelector('.screenshot')
 
     menuUI.innerHTML = `
-        <button id="capture-btn">Capture</button>
-        <button id="projection-btn">Projection</button>
-        <button id="save-btn">Save</button>
+        <button id="depth-btn">Depth</button>
+        <button id="project-btn">Project</button>
     `
 
     screenUI.innerHTML = `
@@ -110,20 +124,16 @@ class _Layout {
 
     this.canvasImage = document.getElementById('canvas-image')
 
-    this.captureBtn = document.getElementById('capture-btn')
-    this.captureBtn.addEventListener('click', this.capture)
+    this.depthBtn = document.getElementById('depth-btn')
+    this.depthBtn.addEventListener('click', this.createDepthMap)
 
-    this.projectionBtn = document.getElementById('projection-btn')
-    this.projectionBtn.addEventListener('click', this.projection)
-
-    this.saveBtn = document.getElementById('save-btn')
-    this.saveBtn.addEventListener('click', this.saveMap)
+    this.projectBtn = document.getElementById('project-btn')
+    this.projectBtn.addEventListener('click', this.project)
   }
 
   bind() {
-    this.capture = this.capture.bind(this)
-    this.projection = this.projection.bind(this)
-    this.saveMap = this.saveMap.bind(this)
+    this.createDepthMap = this.createDepthMap.bind(this)
+    this.project = this.project.bind(this)
   }
 
   init() {

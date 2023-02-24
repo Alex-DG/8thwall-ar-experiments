@@ -17,6 +17,8 @@
     "vite-plugin-glsl": "1.1.2"
   },
   "dependencies": {
+    "browserify-fs": "^1.0.0",
+    "pngjs": "^7.0.0",
     "three": "0.146.0",
     "three-projected-material": "^2.2.1"
   }

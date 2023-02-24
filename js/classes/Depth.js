@@ -35,6 +35,19 @@ class _Depth {
     )
     this.target.depthTexture.format = format
     this.target.depthTexture.type = type
+
+    // const box = new THREE.Mesh(
+    //   new THREE.BoxGeometry(2, 2, 2),
+    //   new THREE.MeshNormalMaterial({
+    //     displacementMap: this.target.depthTexture,
+    //     displacementScale: 1.0,
+    //     displacementBias: 0.0,
+    //   })
+    // )
+    // box.position.z = 5
+    // box.position.y = -1
+
+    // scene.add(box)
   }
 
   setInstance(glb) {
@@ -48,11 +61,15 @@ class _Depth {
 
     scene.add(this.instance)
 
-    // this.instance.traverse((o) => {
-    //   if (o.isMesh) {
-    //     o.material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
-    //   }
-    // })
+    this.instance.traverse((o) => {
+      if (o.isMesh) {
+        o.material = new THREE.MeshBasicMaterial({
+          transparent: true,
+          opacity: 0,
+        })
+        // o.material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+      }
+    })
 
     this.setPlaneDepth()
   }

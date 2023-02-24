@@ -11,12 +11,18 @@ class _Box {
       })
     )
 
-    box.position.z = -4.5
+    console.log({ geo: box.geometry.attributes.position })
+
+    box.position.z = 0
     box.rotateY(Math.PI / 6)
 
     scene.add(box)
 
     this.instance = box
+  }
+
+  hide() {
+    this.instance.visible = false
   }
 
   init() {
