@@ -30,6 +30,7 @@ class _Layout {
     }
   }
 
+  // Generated depth texture
   async createDepthMap() {
     const { renderer, camera, scene } = XR8.Threejs.xrScene()
 
@@ -105,7 +106,7 @@ class _Layout {
     console.log({ depthTexture: target.depthTexture })
 
     // Box.hide()
-    // scene.add(postQuad)
+    // scene.add(postQuad) // UNCOMMENT TO SEE THE DEPTH TEXTURE IN A PLANE
     this.depthTexture = target.depthTexture
   }
 

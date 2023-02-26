@@ -9,6 +9,7 @@ import LiveFeed from '../classes/LiveFeed'
 import Depth from '../classes/Depth'
 import Exemple from '../classes/Exemple'
 import Hachiko from '../classes/Hachiko'
+import ScanLines from '../classes/ScanLines'
 
 export const initWorldPipelineModule = () => {
   const cameraTexture = new THREE.Texture()
@@ -25,11 +26,12 @@ export const initWorldPipelineModule = () => {
 
     // Hachiko.init()
 
-    Box.init()
+    // Box.init()
     // TextureProjection.init()
     // LiveFeed.init()
     // Depth.init()
     // Exemple.init()
+    ScanLines.init()
 
     console.log('✨', 'World ready')
   }
@@ -50,10 +52,11 @@ export const initWorldPipelineModule = () => {
   }
 
   const render = () => {
-    // Box?.update()
+    Box?.update()
     TextureProjection?.update()
     LiveFeed?.update()
     Depth?.update()
+    ScanLines?.update()
   }
 
   return {
