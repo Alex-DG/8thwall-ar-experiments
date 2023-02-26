@@ -2,6 +2,11 @@ import * as THREE from 'three'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 
 class _ScanLines {
+  setMixer(model) {
+    const animations = model.animations
+    this.mixer = new THREE.AnimationMixer(model)
+    this.mixer.clipAction(animations[0]).play()
+  }
   async loadModel() {
     try {
       this.plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0)
@@ -30,7 +35,8 @@ class _ScanLines {
 
       object.traverse((child) => {
         if (child.isMesh) {
-          let mat = child.material
+          let mat = new THREE.MeshToonMaterial({ color: 'hotpink' })
+          child.material = mat
           mat.onBeforeCompile = (shader) => {
             shader.uniforms.scanPlane = this.uniforms.plane
             shader.vertexShader = `
@@ -44,7 +50,7 @@ class _ScanLines {
                           vWPos = worldPosition.xyz;
               `
             )
-            console.log(shader.fragmentShader)
+
             shader.fragmentShader = `
                       uniform vec4 scanPlane;
                       varying vec3 vWPos;
@@ -66,6 +72,8 @@ class _ScanLines {
       object.position.y = -1
       scene.add(object)
 
+      this.setMixer(object)
+
       this.isReady = true
     } catch (error) {
       console.log('load-model-scan-error', { error })
@@ -83,6 +91,9 @@ class _ScanLines {
 
   update() {
     if (!this.isReady) return
+
+    const d = this.clock.getDelta()
+    this.mixer.update(d)
 
     const t = this.clock.getElapsedTime()
     this.pcp.y = Math.sin(t * 0.25) //* 2 + 2 //* 9 + 9
