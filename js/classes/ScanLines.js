@@ -35,8 +35,14 @@ class _ScanLines {
 
       object.traverse((child) => {
         if (child.isMesh) {
-          let mat = new THREE.MeshToonMaterial({ color: 'hotpink' })
-          child.material = mat
+          // let mat = new THREE.MeshStandardMaterial({
+          //   transparent: true,
+          //   opacity: 1,
+          // })
+          // child.material = mat
+          let mat = child.material
+          mat.transparent = true
+
           mat.onBeforeCompile = (shader) => {
             shader.uniforms.scanPlane = this.uniforms.plane
             shader.vertexShader = `
@@ -62,7 +68,8 @@ class _ScanLines {
 
                     float thinness = 0.3;
                     float scanline = smoothstep(thinness, 0., abs(scanPlane.w - dot( vWPos, scanPlane.xyz )));
-                    gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(1, 0.125, 0.25), scanline);
+                    gl_FragColor = mix(vec4(gl_FragColor.rgb, 0.0), vec4(1, 0.125, 0.25, 1.0), scanline); // create transparent body
+                    // gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(1, 0.125, 0.25), scanline); // default material
               `
             )
           }
