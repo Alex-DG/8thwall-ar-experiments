@@ -100,7 +100,7 @@ class _ScanLines {
     if (!this.isReady) return
 
     const d = this.clock.getDelta()
-    this.mixer.update(d)
+    // this.mixer.update(d)
 
     const t = this.clock.getElapsedTime()
     this.pcp.y = Math.sin(t * 0.25) //* 2 + 2 //* 9 + 9
